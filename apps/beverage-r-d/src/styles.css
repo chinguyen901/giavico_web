@@ -1,0 +1,17 @@
+html,
+body {
+  min-width: 800px;
+}
+
+body {
+  background: #0f172a;
+  margin: 0;
+}
+
+html.light-theme body {
+  background: #f8fafc;
+}
+
+html.dark-theme body {
+  background: #0f172a;
+}
