@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterModule, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterModule, RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AppLanguage, LanguageService } from '../../../core/i18n/language.service';
 import { ThemeService } from '../../../core/theme/theme.service';
 import { PlanningService } from '../data-access/planning.service';
+import { AuthService } from '../../../core/auth/auth.service';
 
 @Component({
   selector: 'app-planning-shell',
   standalone: true,
-  imports: [RouterModule, RouterLink, RouterLinkActive],
+  imports: [RouterModule, RouterLink, RouterLinkActive, CommonModule],
   template: `
     <div class="planning-app">
 
@@ -40,6 +42,13 @@ import { PlanningService } from '../data-access/planning.service';
           </select>
           <button type="button" class="ph-btn" (click)="theme.toggleTheme()">
             {{ theme.theme() === 'dark' ? t('lightMode') : t('darkMode') }}
+          </button>
+          <div class="ph-user-chip" *ngIf="auth.currentUser() as user">
+            <span class="ph-user-avatar">{{ userInitials() }}</span>
+            <span class="ph-user-name">{{ user.displayName }}</span>
+          </div>
+          <button type="button" class="ph-btn ph-btn-logout" (click)="onLogout()">
+            {{ t('authLogout') }}
           </button>
         </div>
       </header>
@@ -150,6 +159,39 @@ import { PlanningService } from '../data-access/planning.service';
       cursor: pointer;
     }
     .ph-select:focus, .ph-btn:hover { border-color: #3b82f6; outline: none; }
+    .ph-user-chip {
+      align-items: center;
+      background: #0b1220;
+      border: 1px solid #3a4b63;
+      border-radius: 999px;
+      display: flex;
+      gap: 7px;
+      max-width: 160px;
+      padding: 4px 10px 4px 4px;
+    }
+    .ph-user-avatar {
+      align-items: center;
+      background: linear-gradient(135deg, #0284c7, #4f46e5);
+      border-radius: 50%;
+      color: #fff;
+      display: inline-flex;
+      flex-shrink: 0;
+      font-size: .68rem;
+      font-weight: 800;
+      height: 24px;
+      justify-content: center;
+      width: 24px;
+    }
+    .ph-user-name {
+      color: #dbe5f2;
+      font-size: .78rem;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .ph-btn-logout { border-color: rgba(248,113,113,.4); color: #fca5a5; }
+    .ph-btn-logout:hover { background: rgba(127,29,29,.3); border-color: #ef4444; }
 
     /* ── Line filter bar ── */
     .ph-line-bar {
@@ -215,6 +257,10 @@ import { PlanningService } from '../data-access/planning.service';
     :host-context(.light-theme) .ph-line-btn    { border-color: #e2e8f0; color: #64748b; }
     :host-context(.light-theme) .ph-line-btn:hover { border-color: #94a3b8; color: #1e293b; }
     :host-context(.light-theme) .ph-line-btn.active { background: #dbeafe; border-color: #3b82f6; color: #1d4ed8; }
+    :host-context(.light-theme) .ph-user-chip { background: #f8fafc; border-color: #cbd5e1; }
+    :host-context(.light-theme) .ph-user-name { color: #334155; }
+    :host-context(.light-theme) .ph-btn-logout { border-color: rgba(220,38,38,.3); color: #dc2626; }
+    :host-context(.light-theme) .ph-btn-logout:hover { background: rgba(254,226,226,.5); border-color: #ef4444; }
 
     /* Accessibility */
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
@@ -225,6 +271,8 @@ export class PlanningShellComponent {
   readonly lang  = inject(LanguageService);
   readonly theme = inject(ThemeService);
   readonly svc   = inject(PlanningService);
+  readonly auth  = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly LINES: { key: 'all' | 'AV' | 'ND' | 'GV'; label: string }[] = [
     { key: 'all', label: 'All' },
@@ -235,4 +283,18 @@ export class PlanningShellComponent {
 
   t(key: string): string { return this.lang.translate(key); }
   setLang(v: AppLanguage): void { this.lang.setLanguage(v); }
+
+  onLogout(): void {
+    this.auth.logout();
+    this.router.navigate(['/login']);
+  }
+
+  userInitials(): string {
+    const name = this.auth.currentUser()?.displayName ?? '';
+    if (!name) return 'G';
+    const parts = name.trim().split(/\s+/);
+    return parts.length >= 2
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : name.slice(0, 2).toUpperCase();
+  }
 }
