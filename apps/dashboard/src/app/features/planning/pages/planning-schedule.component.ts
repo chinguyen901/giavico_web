@@ -389,11 +389,14 @@ const SLOT_CSS: Record<string, string> = {
     .page-header p { color: var(--muted, #94a3b8); font-size: .76rem; margin: 3px 0 0; }
 
     /* ── Tabs ── */
-    .tab-group { display: flex; gap: 6px; flex-shrink: 0; }
-    .tab-btn { background: var(--card-bg, #172033); border: 1px solid var(--border, #334155); border-radius: 8px; color: var(--muted, #94a3b8); cursor: pointer; font-size: .8rem; font-weight: 600; padding: 8px 14px; transition: all .15s; }
-    .tab-btn:hover { border-color: #3b82f6; color: #93c5fd; }
-    .tab-btn.active { background: #1e3a5f; border-color: #3b82f6; color: #93c5fd; }
-    .tab-btn.gv-tab.active { background: #431407; border-color: #f97316; color: #fdba74; }
+    .tab-group { display: flex; gap: 8px; flex-shrink: 0; }
+    .tab-btn { background: #1a2a3f; border: 1.5px solid #334155; border-radius: 8px; color: #94a3b8; cursor: pointer; font-size: .8rem; font-weight: 600; padding: 9px 16px; transition: all .15s; white-space: nowrap; }
+    .tab-btn:hover { border-color: #3b82f6; color: #93c5fd; background: #1e3a5f; }
+    .tab-btn.active { background: #1e3a5f; border-color: #3b82f6; border-width: 2px; color: #93c5fd; box-shadow: 0 0 0 1px #3b82f6 inset; }
+    /* GV tab has orange accent even when inactive, so user can find it */
+    .tab-btn.gv-tab { background: #1e0e00; border-color: #78350f; color: #f97316; }
+    .tab-btn.gv-tab:hover { border-color: #f97316; color: #fdba74; background: #2d1500; }
+    .tab-btn.gv-tab.active { background: #431407; border-color: #f97316; border-width: 2px; color: #fdba74; box-shadow: 0 0 0 1px #f97316 inset; }
 
     /* ── Summary ── */
     .summary-grid { display: grid; gap: 10px; grid-template-columns: repeat(4, 1fr); }
@@ -590,12 +593,17 @@ const SLOT_CSS: Record<string, string> = {
 
     /* ── Light theme overrides ── */
     :host-context(.light-theme) h3                  { color: #1e293b; }
+    :host-context(.light-theme) .page-header p      { color: #64748b; }
     :host-context(.light-theme) .sum-card           { background: #fff; border-color: #e2e8f0; }
     :host-context(.light-theme) .sum-val            { color: #1e293b; }
     :host-context(.light-theme) .sum-label          { color: #64748b; }
-    :host-context(.light-theme) .tab-btn            { background: #f8fafc; border-color: #e2e8f0; color: #64748b; }
-    :host-context(.light-theme) .tab-btn.active     { background: #dbeafe; border-color: #3b82f6; color: #1d4ed8; }
-    :host-context(.light-theme) .tab-btn.gv-tab.active { background: #ffedd5; border-color: #f97316; color: #ea580c; }
+    /* Tabs light mode: strong borders + distinct GV orange even inactive */
+    :host-context(.light-theme) .tab-btn            { background: #f1f5f9; border-color: #94a3b8; border-width: 1.5px; color: #374151; }
+    :host-context(.light-theme) .tab-btn:hover      { background: #dbeafe; border-color: #3b82f6; color: #1d4ed8; }
+    :host-context(.light-theme) .tab-btn.active     { background: #dbeafe; border-color: #2563eb; border-width: 2px; color: #1d4ed8; }
+    :host-context(.light-theme) .tab-btn.gv-tab     { background: #fff7ed; border-color: #f97316; border-width: 1.5px; color: #c2410c; }
+    :host-context(.light-theme) .tab-btn.gv-tab:hover { background: #ffedd5; border-color: #ea580c; color: #9a3412; }
+    :host-context(.light-theme) .tab-btn.gv-tab.active { background: #ffedd5; border-color: #ea580c; border-width: 2px; color: #9a3412; box-shadow: 0 0 0 1px #f97316 inset; }
     :host-context(.light-theme) .gantt-card         { background: #fff; border-color: #e2e8f0; }
     :host-context(.light-theme) .gantt-table th     { background: #f8fafc; color: #94a3b8; }
     :host-context(.light-theme) .gantt-table td     { border-color: #f1f5f9; }
