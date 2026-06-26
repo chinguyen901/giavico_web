@@ -19,8 +19,8 @@ const STATUS_CSS: Record<string, string> = {
       <!-- Page header -->
       <div class="dash-header">
         <div>
-          <h3>{{ isVi ? 'Tổng Quan Hệ Thống' : '系統總覽' }}</h3>
-          <p>{{ isVi ? 'Cập nhật: ' + todayStr : '更新：' + todayStr }}</p>
+          <h3>{{ tl('System Overview', 'Tổng Quan Hệ Thống Giavico', '系統總覽') }}</h3>
+          <p>{{ tl('Updated: ', 'Cập nhật: ', '更新：') + todayStr }}</p>
         </div>
       </div>
 
@@ -271,6 +271,12 @@ export class PlanningDashboardComponent {
   private readonly svc = inject(PlanningService);
 
   t(key: string): string { return this.lang.translate(key); }
+  tl(en: string, vi: string, zh: string): string {
+    const lang = this.lang.language();
+    if (lang === 'vi') return vi;
+    if (lang === 'zh-TW') return zh;
+    return en;
+  }
 
   get isVi(): boolean { return this.lang.language() === 'vi'; }
   get stats() { return this.svc.stats; }
